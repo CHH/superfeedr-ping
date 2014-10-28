@@ -3,6 +3,8 @@ superfeedr-ping
 
 Simple service which pings Superfeedr when a Github web hook was triggered. This service is designed to run on Heroku.
 
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+
 Setup
 -----
 

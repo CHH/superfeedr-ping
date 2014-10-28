@@ -1,0 +1,5 @@
+{
+  "name": "Superfeedr Ping Thing",
+  "description": "A simple endpoint for a Github webhook which triggers a Superfeedr ping.",
+  "repository": "https://github.com/CHH/superfeedr-ping"
+}
