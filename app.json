@@ -1,5 +1,16 @@
 {
-  "name": "Superfeedr Ping Thing",
-  "description": "A simple endpoint for a Github webhook which triggers a Superfeedr ping.",
-  "repository": "https://github.com/CHH/superfeedr-ping"
+    "name": "Superfeedr Ping Thing",
+    "description": "A simple endpoint for a Github webhook which triggers a Superfeedr ping.",
+    "repository": "https://github.com/CHH/superfeedr-ping",
+    "env": {
+        "HUB_URL": {
+            "description": "URL of your Superfeedr Hub, e.g. http://yourusername.superfeedr.com"
+        },
+        "FEED_URL": {
+            "description": "URL to your feed on your site, e.g. http://christophh.net/atom.xml"
+        },
+        "HOOK_SECRET": {
+            "description": "Secret which was configured in the Github Webhook settings"
+        }
+    }
 }
