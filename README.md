@@ -19,4 +19,4 @@ Configuration
 License
 -------
 
-See [LICENSE.txt](LICENSE.txt).
+[MIT License](/LICENSE).
