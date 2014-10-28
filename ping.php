@@ -49,7 +49,9 @@ $context = stream_context_create(['http' => [
 ]]);
 
 $response = file_get_contents('http://christophh.superfeedr.com', false, $context);
-heroku_log("Superfeedr: ".$response."\n");
+heroku_log("Superfeedr: ".strlen($response)." Bytes \n", [
+    'headers' => json_encode($http_response_header)
+]);
 
 header('Content-Type: application/json');
 
