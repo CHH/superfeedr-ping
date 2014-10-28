@@ -7,6 +7,23 @@ function verify_payload($payloadData)
     return $signature === @$_SERVER['HTTP_X_HUB_SIGNATURE'];
 }
 
+function heroku_log($string, $variables = [])
+{
+    static $log;
+
+    if (null === $log) {
+        $log = fopen('php://stderr', 'wb');
+    }
+
+    if ($variables) {
+        $string .= join(' ', array_map(function($key, $value) {
+            return "$key=$value";
+        }, array_keys($variables), array_values($variables)));
+    }
+
+    fwrite($log, $string."\n");
+}
+
 $feedUrl = @$_SERVER['FEED_URL'] ?: 'http://christophh.net/atom.xml';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -14,10 +31,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     return;
 }
 
+$logs = fopen('php://stderr', 'wb');
 $payload = file_get_contents('php://input');
 
 if (verify_payload($payload) === false) {
-    fwrite('php://stderr', "Payload was not valid: ${payload}\n");
+    heroku_log("Payload was not valid: ${payload}\n");
     header('HTTP/1.1 400 Bad Request');
     return;
 }
@@ -31,7 +49,7 @@ $context = stream_context_create(['http' => [
 ]]);
 
 $response = file_get_contents('http://christophh.superfeedr.com', false, $context);
-fwrite('php://stderr', "Superfeedr: ".$response."\n");
+heroku_log("Superfeedr: ".$response."\n");
 
 header('Content-Type: application/json');
 
