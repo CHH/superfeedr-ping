@@ -46,7 +46,10 @@ function ping_hub()
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('HTTP/1.1 403 Forbidden');
+    header('HTTP/1.1 405 Method Not Allowed');
+    header('Allow: POST');
+    header('Content-Type: application/json');
+    echo json_encode(['success' => false, 'error' => 'Wrong method']);
     return;
 }
 
@@ -55,13 +58,12 @@ $payload = file_get_contents('php://input');
 if (verify_payload($payload) === false) {
     heroku_log("Payload was not valid: ${payload}\n");
     header('HTTP/1.1 400 Bad Request');
+    header('Content-Type: application/json');
+    echo json_encode(['success' => false, 'error' => 'Payload signature invalid']);
     return;
 }
 
 ping_hub();
 
 header('Content-Type: application/json');
-
-echo json_encode([
-    'success' => true,
-]);
+echo json_encode(['success' => true]);
