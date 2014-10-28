@@ -16,7 +16,7 @@ function heroku_log($string, $variables = [])
     }
 
     if ($variables) {
-        $string .= join(' ', array_map(function($key, $value) {
+        $string .= ' '.join(' ', array_map(function($key, $value) {
             return "$key=$value";
         }, array_keys($variables), array_values($variables)));
     }
@@ -49,7 +49,7 @@ $context = stream_context_create(['http' => [
 ]]);
 
 $response = file_get_contents('http://christophh.superfeedr.com', false, $context);
-heroku_log("Superfeedr: ".strlen($response)." Bytes \n", [
+heroku_log("Superfeedr: ".strlen($response)." Bytes", [
     'headers' => json_encode($http_response_header)
 ]);
 
