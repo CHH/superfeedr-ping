@@ -2,9 +2,9 @@
 
 function verify_payload($payloadData)
 {
-    $signature = 'sha1='.hash_hmac('sha1', $payloadData, $_SERVER['HOOK_SECRET']);
+    $signature = 'sha1='.hash_hmac('sha1', $payloadData, @$_SERVER['HOOK_SECRET']);
 
-    return $signature === $_SERVER['HTTP_X_HUB_SIGNATURE'];
+    return $signature === @$_SERVER['HTTP_X_HUB_SIGNATURE'];
 }
 
 $feedUrl = @$_SERVER['FEED_URL'] ?: 'http://christophh.net/atom.xml';
@@ -33,3 +33,8 @@ $context = stream_context_create(['http' => [
 $response = file_get_contents('http://christophh.superfeedr.com', false, $context);
 error_log("Superfeedr: ".$response);
 
+header('Content-Type: application/json');
+
+echo json_encode([
+    'success' => true,
+]);
