@@ -2,9 +2,13 @@
 
 function verify_payload($payloadData)
 {
-    $signature = 'sha1='.hash_hmac('sha1', $payloadData, @$_SERVER['HOOK_SECRET']);
+    if (empty($_SERVER['HTTP_X_HUB_SIGNATURE'])) {
+        return false;
+    }
 
-    return $signature === @$_SERVER['HTTP_X_HUB_SIGNATURE'];
+    $signature = 'sha1='.hash_hmac('sha1', $payloadData, $_SERVER['HOOK_SECRET']);
+
+    return $signature === $_SERVER['HTTP_X_HUB_SIGNATURE'];
 }
 
 function heroku_log($string, $variables = [])
