@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $payload = file_get_contents('php://input');
 
 if (verify_payload($payload) === false) {
-    error_log('Payload was not valid: '.$payload);
+    fwrite('php://stderr', "Payload was not valid: ${payload}\n");
     header('HTTP/1.1 400 Bad Request');
     return;
 }
@@ -31,7 +31,7 @@ $context = stream_context_create(['http' => [
 ]]);
 
 $response = file_get_contents('http://christophh.superfeedr.com', false, $context);
-error_log("Superfeedr: ".$response);
+fwrite('php://stderr', "Superfeedr: ".$response."\n");
 
 header('Content-Type: application/json');
 
