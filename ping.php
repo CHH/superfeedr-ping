@@ -1,9 +1,35 @@
 <?php
 
-$baseUrl = 'http://christophh.net';
+function verify_payload($payloadData)
+{
+    $signature = 'sha1='.hash_hmac('sha1', $payloadData, $_SERVER['HOOK_SECRET']);
 
-$files = [
-    'atom.xml',
-];
+    return $signature === $_SERVER['HTTP_X_HUB_SIGNATURE'];
+}
 
-error_log(file_get_contents('php://stdin'));
+$feedUrl = @$_SERVER['FEED_URL'] ?: 'http://christophh.net/atom.xml';
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('HTTP/1.1 403 Forbidden');
+    return;
+}
+
+$payload = file_get_contents('php://input');
+
+if (verify_payload($payload) === false) {
+    error_log('Payload was not valid: '.$payload);
+    header('HTTP/1.1 400 Bad Request');
+    return;
+}
+
+$context = stream_context_create(['http' => [
+    'method' => 'POST',
+    'content' => http_build_query([
+        'hub.mode' => 'publish',
+        'hub.url' => 'http://www.christophh.net/atom.xml'
+    ]),
+]]);
+
+$response = file_get_contents('http://christophh.superfeedr.com', false, $context);
+error_log("Superfeedr: ".$response);
+
